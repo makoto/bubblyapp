@@ -10,7 +10,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110314141355) do
+ActiveRecord::Schema.define(:version => 20110314220423) do
+
+  create_table "mentions", :force => true do |t|
+    t.string   "twitter"
+    t.integer  "tweet_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "schedules", :force => true do |t|
     t.datetime "start_at"
@@ -25,6 +32,15 @@ ActiveRecord::Schema.define(:version => 20110314141355) do
     t.string   "name"
     t.string   "twitter"
     t.integer  "schedule_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tweets", :force => true do |t|
+    t.integer  "id_str"
+    t.integer  "retweet_count"
+    t.datetime "tweeted_at"
+    t.string   "content"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
