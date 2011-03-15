@@ -7,23 +7,50 @@
 	<title>index.html</title>
 	  <%= javascript_include_tag("raphael-min.js", "g.raphael-min.js", "g.line-min.js")%>
     <script type="text/javascript">
-        var line_numbers = <%= Tweet.numbers %>
+        var line_numbers = <%= raw Tweet.numbers %>
         var x_values = [];
+        var line_dates = <%= raw Tweet.dates%>
+        var date_axis = [] 
         for (var i=1; i < line_numbers.length + 1; i++) {
+          date = new Date(line_dates[i]);
+          if ((date.getMinutes() % 10) == 0) {
+            console.log(i);
+            date_axis.push({x:i, date:date})
+          };
           x_values.push(i);
         };
-        console.log(line_numbers);
-        console.log(x_values);
-        // var x_values = [1, 2, 3];
-        // var line_numbers = [10, 20, 15];
+        // console.log(line_dates);
+        // console.log(line_numbers);
+        // console.log(x_values);
         window.onload = function() {
             // Creates canvas 640 × 480 at 10, 50
-            var r = Raphael(document.getElementById("graph"), 1000, 480);
+            var width = 1000;
+            var height = 280
+            var r = Raphael(document.getElementById("graph"), width, height);
+
+            // Draws line seperator and time
+            var divider = width / 6
+            for (var i=1; i < date_axis.length; i++) {
+              var divider_x = i * divider;
+              var divider_date = date_axis[i].date;
+              r.path("M" + divider_x + " 0" + "L" + divider_x + " 260" ).attr({stroke:"hsb(0.5, 0.25, 1)"});
+              r.text(divider_x, 270, divider_date.getHours() + ":" + divider_date.getMinutes());
+            };
             
             // Creates a simple line chart at 10, 10
             // width 300, height 220
             // x-values: [1,2,3,4,5], y-values: [10,20,15,35,30]
-            r.g.linechart(10,10,1000,220,x_values,line_numbers);
+            var linec = r.g.linechart(10,10,1000,220,x_values,line_numbers, { "symbol":"o", "colors":["cornflowerblue"]});
+            var figure = null;
+            linec.hover(function() {
+              h = this;
+              figure = r.text(this.x, this.y, this.value);
+              this.symbol.attr({'fill':'white'});
+            }, function() {
+              figure.remove();
+              this.symbol.attr({'fill':'cornflowerblue'});
+            });
+            
         }
     </script>
 </head>
@@ -41,7 +68,7 @@
   <%= Tweet.summary.sort_by{|a, b| a[0] <=> b[1] } %>
   
   <div id="bubble"></div>
-  <div id="graph"></div>
+  <div id="graph" style="width:1000px;height:280px;border:1px dashed #CCC;"></div>
   <hr/>
   <%= @tweets %>
 
