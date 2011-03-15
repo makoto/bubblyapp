@@ -5,6 +5,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 	<title>index.html</title>
+	  <style type="text/css" media="screen">
+	   *{
+  	   font-family: "Museo 700", Verdana, serif
+	   }
+	  </style>
 	  <%= javascript_include_tag("raphael-min.js", "g.raphael-min.js", "g.line-min.js")%>
     <script type="text/javascript">
         var line_numbers = <%= raw Tweet.numbers %>
@@ -59,13 +64,30 @@
   <h2>
     <%= @tweets.first.tweeted_at.getlocal.to_s(:short) %> 
     to <%= @tweets.last.tweeted_at.getlocal.to_s(:short) %>
-    (
-    <%= @tweets.first.tweeted_at.in_time_zone("Central Time (US & Canada)").to_s(:short) %> 
-    to <%= @tweets.last.tweeted_at.in_time_zone("Central Time (US & Canada)").to_s(:short) %>
-    in Austin, TX)
   </h2>
+  <h3>
+  (
+  <%= @tweets.first.tweeted_at.in_time_zone("Central Time (US & Canada)").to_s(:short) %> 
+  to <%= @tweets.last.tweeted_at.in_time_zone("Central Time (US & Canada)").to_s(:short) %>
+  in Austin, TX
+  )
+  </h3>
+  <table border="1" cellspacing="0" cellpadding="0">
+    <tr>
+      <th>@user</th>
+      <th>mentioned</th>
+      <th>mentioned</th>
+    </tr>
+    <% @sorted_mentions.each do |m| %>
+      <tr>
+        <td><%= m.first %></td>
+        <td><%= m[1] %></td>
+        <td><%= m.last %></td>
+      </tr>
+    <% end %>
+  </table>
   
-  <%= Tweet.summary.sort_by{|a, b| a[0] <=> b[1] } %>
+  <%= @mentions %>
   
   <div id="bubble"></div>
   <div id="graph" style="width:1000px;height:280px;border:1px dashed #CCC;"></div>

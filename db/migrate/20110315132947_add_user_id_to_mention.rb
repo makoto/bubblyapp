@@ -7,3 +7,10 @@ class AddUserIdToMention < ActiveRecord::Migration
     remove_column :mentions, :user_id
   end
 end
+
+# Migration script
+# Mention.all.each do |m|
+#   m.user = User.find_or_create_by_twitter(m.twitter)
+#   m.save!
+# end
+# 
