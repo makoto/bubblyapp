@@ -43,14 +43,23 @@
       // 
       // Flash fallback logging - don't include this in production
       WEB_SOCKET_DEBUG = true;
+      function updateTPM () {
+        var tpm = counter.length * 6;
+        $("#tpm").text(tpm);
+        console.log(counter.length * 6)
+        counter = [];
+      }
 
       var pusher = new Pusher('1ae96b4c472db6c039f1');
       var channel = pusher.subscribe('twitter');
+      var counter = [];
       channel.bind('created', function(data) {
-        // Pusher.log(data.some.text);
         // data.some.user.profile_image_url;
+        counter.push(data.some.created_at);
         $('#tweets ul').prepend("<li>" + data.some.text +"</li>")
       });
+      setInterval("updateTPM()", 10000);
+      
     </script>
 	  
     <script type="text/javascript">
@@ -170,8 +179,8 @@
   </h2>
   <div class="container">
     <div class="left" class="box column"  style="border:1px dashed #CCC;">
-      <div id="tpm" style="width:200px;height:25px">
-        Tweets Per Minute:<%= @tpm %>
+      <div style="width:200px;height:25px">
+        Tweets Per Minute:<span id="tpm"><%= @tpm %></span>
       </div>
       <div id="tweets" class="text" style="border:1px dashed #CCC;">
         <ul>
