@@ -66,9 +66,7 @@
         var processingMap = function(value, istart, istop, ostart, ostop) {
           return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
         };
-    
-    
-    
+        
         var line_numbers = <%= raw Tweet.numbers %>;
         var blue = "hsb(0.6, 1, 0.75)";
         var green = "hsb(0.5, 0.25, 1)";
@@ -86,84 +84,64 @@
         // console.log(line_dates);
         // console.log(line_numbers);
         // console.log(x_values);
-        window.onload = function() {
-            // Creates canvas 640 × 480 at 10, 50
-            var width = 800;
-            var height = 180
-            var r = Raphael(document.getElementById("graph"), width, height);
+        var draw = function(){
+          // Creates canvas 640 × 480 at 10, 50
+          var width = 800;
+          var height = 180
+          var r = Raphael(document.getElementById("graph"), width, height);
 
-            // Draws line seperator and time
-            var divider = width / 6
-            for (var i=1; i < date_axis.length; i++) {
-              var divider_x = i * divider;
-              var divider_date = date_axis[i].date;
-              r.path("M" + divider_x + " 0" + "L" + divider_x + " " + (height - 20) ).attr({stroke:"hsb(0.5, 0.25, 1)"});
-              r.text(divider_x, height - 10, divider_date.getHours() + ":" + divider_date.getMinutes());
+          // Draws line seperator and time
+          var divider = width / 6
+          for (var i=1; i < date_axis.length; i++) {
+            var divider_x = i * divider;
+            var divider_date = date_axis[i].date;
+            r.path("M" + divider_x + " 0" + "L" + divider_x + " " + (height - 20) ).attr({stroke:"hsb(0.5, 0.25, 1)"});
+            r.text(divider_x, height - 10, divider_date.getHours() + ":" + divider_date.getMinutes());
+          };
+          
+          
+          var mentioned = <%= raw @mentions_summary.to_json %>;
+          // Creates a simple line chart at 10, 10
+          // width 300, height 220
+          // x-values: [1,2,3,4,5], y-values: [10,20,15,35,30]
+          var linec = r.g.linechart(100,10,width,150,x_values,line_numbers, { "symbol":"o", "colors":["cornflowerblue"]});
+          var figure = null;
+          linec.hover(function() {
+            h = this;
+            figure = r.text(this.x , this.y, this.value);
+            this.symbol.attr({'fill':'white'});
+          }, function() {
+            figure.remove();
+            this.symbol.attr({'fill':'cornflowerblue'});
+          });
+          var rr = Raphael(document.getElementById("bubble"), width, height);
+          var space = width * 0.9 / mentioned.length;
+          for (var i=0; i < mentioned.length; i++) {
+            var m = mentioned[i]
+            if (m[2]) {
+              var color = green;
+            }else{
+              var color = blue;
             };
-            
-            
-            var mentioned = <%= raw @mentions_summary.to_json %>;
-            // Creates a simple line chart at 10, 10
-            // width 300, height 220
-            // x-values: [1,2,3,4,5], y-values: [10,20,15,35,30]
-            var linec = r.g.linechart(100,10,width,150,x_values,line_numbers, { "symbol":"o", "colors":["cornflowerblue"]});
-            var figure = null;
-            linec.hover(function() {
-              h = this;
-              figure = r.text(this.x , this.y, this.value);
-              this.symbol.attr({'fill':'white'});
-            }, function() {
-              figure.remove();
-              this.symbol.attr({'fill':'cornflowerblue'});
+            var mark_size = processingMap(m[1], 25,111 , 5, 20)
+            var mark_x = 50 + (i * space);
+            var mark_y = Math.floor(Math.random()*(height * 0.9));
+            cc = rr.circle(mark_x, mark_y, mark_size).attr({
+                fill: color,
+                stroke: "hsb(0.5, 0.25, 1)"
             });
-
-            var rr = Raphael(document.getElementById("bubble"), width, height);
-            var space = width * 0.9 / mentioned.length;
-            for (var i=0; i < mentioned.length; i++) {
-              var m = mentioned[i]
-              if (m[2]) {
-                var color = green;
-              }else{
-                var color = blue;
-              };
-              
-              var mark_size = processingMap(m[1], 25,111 , 5, 20)
-              var mark_x = 50 + (i * space);
-              var mark_y = Math.floor(Math.random()*(height * 0.9));
-              cc = rr.circle(mark_x, mark_y, mark_size).attr({
-                  fill: color,
-                  stroke: "hsb(0.5, 0.25, 1)"
-              });
-              if (m[2]) {
-                var href = JSON.parse(m[2].schedule.content).href;
-                cc.attr({href:href})
-              };
-              if (mark_size > 3) {
-                tt = rr.text(mark_x,mark_y,  m[0]);
-              };
-              
+            if (m[2]) {
+              var href = JSON.parse(m[2].schedule.content).href;
+              cc.attr({href:href})
             };
-            // cc = rr.circle(100, 100, 20).attr({
-            //     fill: "hsb(0.6, 1, 0.75)",
-            //     stroke: "hsb(0.5, 0.25, 1)"
-            // });
-            // var rect = null;
-            // var tt = null;
-            // cc.hover(function (event) {
-            //     console.log(this);
-            //     this.attr({fill: "hsb(0.6, 1, 0.85)"});
-            //     rect = rr.rect(this.attrs.cx - 10, this.attrs.cy - 10, this.attrs.cx - 30, this.attrs.cy - 30, 10).attr({
-            //       fill: "hsb(0.5, 0.25, 1)",
-            //       stroke: "hsb(0.6, 1, 0.75)",
-            //       href: "foo"
-            //     });
-            //     tt = rr.text(this.attrs.cx + 10, this.attrs.cy + 10, "hello");
-            // }, function (event) {
-            //     this.attr({fill: "hsb(0.6, 1, 0.75)"});
-            //     rect.remove();
-            //     tt.remove();
-            // });
-            
+            if (mark_size > 3) {
+              tt = rr.text(mark_x,mark_y,  m[0]);
+            };
+          };
+        }
+        
+        window.onload = function() {
+          draw();
         }
     </script>
 </head>
