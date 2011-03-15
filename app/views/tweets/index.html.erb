@@ -7,7 +7,8 @@
 	<title>index.html</title>
 	  <style type="text/css" media="screen">
 	   *{
-  	   font-family: "Eigerdals black","Arial Rounded MT Bold","Trebuchet MS",Trebuchet,sans-serif
+  	   font-family: "Eigerdals black","Arial Rounded MT Bold","Trebuchet MS",Trebuchet,sans-serif;
+  	   background: #eee;
 	   }
 	  </style>
 	  <%= javascript_include_tag("raphael-min.js", "g.raphael-min.js", "g.line-min.js")%>
@@ -92,6 +93,8 @@
               };
               
             };
+            var tpm =  <%= @tpm %>;
+            Raphael([document.getElementById("tpm"), 350,50,{type:"text", x:150, y:10,fill:blue,'font-size':15, text:"Current TPM(Tweets Per Minute):" + tpm}]);
             // cc = rr.circle(100, 100, 20).attr({
             //     fill: "hsb(0.6, 1, 0.75)",
             //     stroke: "hsb(0.5, 0.25, 1)"
@@ -118,8 +121,8 @@
 </head>
 
 <body>
-  <h1>SXSW Twitter bubblymap</h1>
-  <h2>
+  <h3>
+    SXSW Twitter bubbly map:
     <%= @tweets.first.tweeted_at.getlocal.to_s(:short) %> 
     to <%= @tweets.last.tweeted_at.getlocal.to_s(:short) %>
   (
@@ -127,9 +130,9 @@
   to <%= @tweets.last.tweeted_at.in_time_zone("Central Time (US & Canada)").to_s(:short) %>
   in Austin, TX
   )
-  </h2>
+  </h3>
+  <div id="tpm" style="width:350px;height:25px"></div>
   <div id="bubble"></div>
   <div id="graph" style="width:1000px;height:180px;border:1px dashed #CCC;"></div>
-  <hr/>
 </body>
 </html>

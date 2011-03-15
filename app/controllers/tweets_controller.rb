@@ -3,6 +3,8 @@ class TweetsController < ApplicationController
     @tweets = Tweet.all
     first = @tweets.first.tweeted_at
     last = @tweets.last.tweeted_at
+    @tpm =( @tweets.size / (last - first) * 60).to_i
+    
     @schedules = Schedule.where("start_at between ? and ? or finish_at between ? and ?", 
       first.to_s(:db), last.to_s(:db), first.to_s(:db), last.to_s(:db)
     )
