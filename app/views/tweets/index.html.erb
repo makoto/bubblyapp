@@ -67,7 +67,7 @@
             });
 
             var rr = Raphael(document.getElementById("bubble"), width, height);
-            var space = width / (mentioned.length + 3);
+            var space = width * 0.9 / mentioned.length;
             for (var i=0; i < mentioned.length; i++) {
               var m = mentioned[i]
               if (m[2]) {
@@ -78,7 +78,7 @@
               
               var mark_size = processingMap(m[1], 25,111 , 5, 20)
               var mark_x = 50 + (i * space);
-              var mark_y = Math.floor(Math.random()*height);
+              var mark_y = Math.floor(Math.random()*(height * 0.9));
               cc = rr.circle(mark_x, mark_y, mark_size).attr({
                   fill: color,
                   stroke: "hsb(0.5, 0.25, 1)"
