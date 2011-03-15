@@ -12,14 +12,16 @@
 	  </style>
 	  <%= javascript_include_tag("raphael-min.js", "g.raphael-min.js", "g.line-min.js")%>
     <script type="text/javascript">
-        var line_numbers = <%= raw Tweet.numbers %>
+        var line_numbers = <%= raw Tweet.numbers %>;
+        var blue = "hsb(0.6, 1, 0.75)";
+        var green = "hsb(0.5, 0.25, 1)";
+        
         var x_values = [];
         var line_dates = <%= raw Tweet.dates%>
         var date_axis = [] 
         for (var i=1; i < line_numbers.length + 1; i++) {
           date = new Date(line_dates[i]);
           if ((date.getMinutes() % 10) == 0) {
-            console.log(i);
             date_axis.push({x:i, date:date})
           };
           x_values.push(i);
@@ -30,7 +32,7 @@
         window.onload = function() {
             // Creates canvas 640 × 480 at 10, 50
             var width = 1000;
-            var height = 280
+            var height = 180
             var r = Raphael(document.getElementById("graph"), width, height);
 
             // Draws line seperator and time
@@ -38,23 +40,94 @@
             for (var i=1; i < date_axis.length; i++) {
               var divider_x = i * divider;
               var divider_date = date_axis[i].date;
-              r.path("M" + divider_x + " 0" + "L" + divider_x + " 260" ).attr({stroke:"hsb(0.5, 0.25, 1)"});
-              r.text(divider_x, 270, divider_date.getHours() + ":" + divider_date.getMinutes());
+              r.path("M" + divider_x + " 0" + "L" + divider_x + " " + (height - 20) ).attr({stroke:"hsb(0.5, 0.25, 1)"});
+              r.text(divider_x, height - 10, divider_date.getHours() + ":" + divider_date.getMinutes());
             };
+            
+            var mentioned = [
+              ["@foo", 10, true],
+              ["@bar", 30, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, true],
+              ["@baz", 20, false],
+              ["@baz", 20, true],
+            ]
             
             // Creates a simple line chart at 10, 10
             // width 300, height 220
             // x-values: [1,2,3,4,5], y-values: [10,20,15,35,30]
-            var linec = r.g.linechart(10,10,1000,220,x_values,line_numbers, { "symbol":"o", "colors":["cornflowerblue"]});
+            var linec = r.g.linechart(10,10,1000,150,x_values,line_numbers, { "symbol":"o", "colors":["cornflowerblue"]});
             var figure = null;
             linec.hover(function() {
               h = this;
-              figure = r.text(this.x, this.y, this.value);
+              figure = r.text(this.x , this.y, this.value);
               this.symbol.attr({'fill':'white'});
             }, function() {
               figure.remove();
               this.symbol.attr({'fill':'cornflowerblue'});
             });
+
+            var rr = Raphael(document.getElementById("bubble"), width, height);
+            var space = width / (mentioned.length + 3);
+            console.log(space);
+            
+            for (var i=0; i < mentioned.length; i++) {
+              var m = mentioned[i]
+              if (m[2]) {
+                var color = green;
+              }else{
+                var color = blue;
+              };
+              cc = rr.circle(50 + (i * space), Math.floor(Math.random()*height), m[1]).attr({
+                  fill: color,
+                  stroke: "hsb(0.5, 0.25, 1)"
+              });
+              
+            };
+            // cc = rr.circle(100, 100, 20).attr({
+            //     fill: "hsb(0.6, 1, 0.75)",
+            //     stroke: "hsb(0.5, 0.25, 1)"
+            // });
+            // var rect = null;
+            // var tt = null;
+            // cc.hover(function (event) {
+            //     console.log(this);
+            //     this.attr({fill: "hsb(0.6, 1, 0.85)"});
+            //     rect = rr.rect(this.attrs.cx - 10, this.attrs.cy - 10, this.attrs.cx - 30, this.attrs.cy - 30, 10).attr({
+            //       fill: "hsb(0.5, 0.25, 1)",
+            //       stroke: "hsb(0.6, 1, 0.75)",
+            //       href: "foo"
+            //     });
+            //     tt = rr.text(this.attrs.cx + 10, this.attrs.cy + 10, "hello");
+            // }, function (event) {
+            //     this.attr({fill: "hsb(0.6, 1, 0.75)"});
+            //     rect.remove();
+            //     tt.remove();
+            // });
             
         }
     </script>
@@ -90,7 +163,7 @@
   <%= @mentions %>
   
   <div id="bubble"></div>
-  <div id="graph" style="width:1000px;height:280px;border:1px dashed #CCC;"></div>
+  <div id="graph" style="width:1000px;height:180px;border:1px dashed #CCC;"></div>
   <hr/>
   <%= @tweets %>
 
