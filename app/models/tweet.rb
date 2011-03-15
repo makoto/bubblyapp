@@ -8,11 +8,11 @@ class Tweet < ActiveRecord::Base
   end
   
   def self.dates
-    self.summary.map{|s| s[0]}
+    self.summary.map{|s| s[0]}.to_json
   end
   
   def self.numbers
-    self.summary.map{|s| s[1]}
+    self.summary.map{|s| s[1]}.to_json
   end
 
 end
