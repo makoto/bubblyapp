@@ -7,11 +7,17 @@
 	<title>index.html</title>
 	  <style type="text/css" media="screen">
 	   *{
-  	   font-family: "Museo 700", Verdana, serif
+  	   font-family: "Eigerdals black","Arial Rounded MT Bold","Trebuchet MS",Trebuchet,sans-serif
 	   }
 	  </style>
 	  <%= javascript_include_tag("raphael-min.js", "g.raphael-min.js", "g.line-min.js")%>
     <script type="text/javascript">
+        var processingMap = function(value, istart, istop, ostart, ostop) {
+          return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+        };
+    
+    
+    
         var line_numbers = <%= raw Tweet.numbers %>;
         var blue = "hsb(0.6, 1, 0.75)";
         var green = "hsb(0.5, 0.25, 1)";
@@ -44,39 +50,9 @@
               r.text(divider_x, height - 10, divider_date.getHours() + ":" + divider_date.getMinutes());
             };
             
-            var mentioned = [
-              ["@foo", 10, true],
-              ["@bar", 30, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, true],
-              ["@baz", 20, false],
-              ["@baz", 20, true],
-            ]
             
+            var mentioned = <%= raw @mentions_summary.to_json %>;
+            console.log(mentioned);
             // Creates a simple line chart at 10, 10
             // width 300, height 220
             // x-values: [1,2,3,4,5], y-values: [10,20,15,35,30]
@@ -102,7 +78,9 @@
               }else{
                 var color = blue;
               };
-              cc = rr.circle(50 + (i * space), Math.floor(Math.random()*height), m[1]).attr({
+              
+              
+              cc = rr.circle(50 + (i * space), Math.floor(Math.random()*height), processingMap(m[1], 25,111 , 5, 20)).attr({
                   fill: color,
                   stroke: "hsb(0.5, 0.25, 1)"
               });
@@ -134,39 +112,18 @@
 </head>
 
 <body>
+  <h1>SXSW Twitter bubblymap</h1>
   <h2>
     <%= @tweets.first.tweeted_at.getlocal.to_s(:short) %> 
     to <%= @tweets.last.tweeted_at.getlocal.to_s(:short) %>
-  </h2>
-  <h3>
   (
   <%= @tweets.first.tweeted_at.in_time_zone("Central Time (US & Canada)").to_s(:short) %> 
   to <%= @tweets.last.tweeted_at.in_time_zone("Central Time (US & Canada)").to_s(:short) %>
   in Austin, TX
   )
-  </h3>
-  <table border="1" cellspacing="0" cellpadding="0">
-    <tr>
-      <th>@user</th>
-      <th>mentioned</th>
-      <th>mentioned</th>
-    </tr>
-    <% @sorted_mentions.each do |m| %>
-      <tr>
-        <td><%= m.first %></td>
-        <td><%= m[1] %></td>
-        <td><%= m.last %></td>
-      </tr>
-    <% end %>
-  </table>
-  
-  <%= @mentions %>
-  
+  </h2>
   <div id="bubble"></div>
   <div id="graph" style="width:1000px;height:180px;border:1px dashed #CCC;"></div>
   <hr/>
-  <%= @tweets %>
-
-
 </body>
 </html>
