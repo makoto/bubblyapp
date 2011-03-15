@@ -3,7 +3,16 @@ class Tweet < ActiveRecord::Base
   validates :id_str, :uniqueness => true
 
   def self.summary
-    group('concat(YEAR(tweeted_at), "/",   MONTH(tweeted_at), "/", DAY(tweeted_at), " ", HOUR(tweeted_at) , ":", MINUTE(tweeted_at))').count
+    @r ||= group('concat(YEAR(tweeted_at), "/",   MONTH(tweeted_at), "/", DAY(tweeted_at), " ", HOUR(tweeted_at) , ":", MINUTE(tweeted_at))').count
+    @r.sort_by{|a, b| a[0] <=> b[1] }
+  end
+  
+  def self.dates
+    self.summary.map{|s| s[0]}
+  end
+  
+  def self.numbers
+    self.summary.map{|s| s[1]}
   end
 
 end

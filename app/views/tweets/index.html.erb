@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>index.html</title>
+	  <%= javascript_include_tag("raphael-min.js", "g.raphael-min.js", "g.line-min.js")%>
+    <script type="text/javascript">
+        var line_numbers = <%= Tweet.numbers %>
+        var x_values = [];
+        for (var i=1; i < line_numbers.length + 1; i++) {
+          x_values.push(i);
+        };
+        console.log(line_numbers);
+        console.log(x_values);
+        // var x_values = [1, 2, 3];
+        // var line_numbers = [10, 20, 15];
+        window.onload = function() {
+            // Creates canvas 640 × 480 at 10, 50
+            var r = Raphael(document.getElementById("graph"), 1000, 480);
+            
+            // Creates a simple line chart at 10, 10
+            // width 300, height 220
+            // x-values: [1,2,3,4,5], y-values: [10,20,15,35,30]
+            r.g.linechart(10,10,1000,220,x_values,line_numbers);
+        }
+    </script>
+</head>
+
+<body>
+  <h2>
+    <%= @tweets.first.tweeted_at.getlocal.to_s(:short) %> 
+    to <%= @tweets.last.tweeted_at.getlocal.to_s(:short) %>
+    (
+    <%= @tweets.first.tweeted_at.in_time_zone("Central Time (US & Canada)").to_s(:short) %> 
+    to <%= @tweets.last.tweeted_at.in_time_zone("Central Time (US & Canada)").to_s(:short) %>
+    in Austin, TX)
+  </h2>
+  
+  <%= Tweet.summary.sort_by{|a, b| a[0] <=> b[1] } %>
+  
+  <div id="bubble"></div>
+  <div id="graph"></div>
+  <hr/>
+  <%= @tweets %>
+
+
+</body>
+</html>
