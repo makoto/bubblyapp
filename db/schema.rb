@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110315132947) do
+ActiveRecord::Schema.define(:version => 20110315184633) do
 
   create_table "mentions", :force => true do |t|
     t.string   "twitter"
@@ -26,7 +26,7 @@ ActiveRecord::Schema.define(:version => 20110315132947) do
   create_table "schedules", :force => true do |t|
     t.datetime "start_at"
     t.datetime "finish_at"
-    t.string   "content"
+    t.text     "content"
     t.string   "href"
     t.datetime "created_at"
     t.datetime "updated_at"

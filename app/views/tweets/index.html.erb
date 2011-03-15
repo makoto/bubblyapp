@@ -52,7 +52,6 @@
             
             
             var mentioned = <%= raw @mentions_summary.to_json %>;
-            console.log(mentioned);
             // Creates a simple line chart at 10, 10
             // width 300, height 220
             // x-values: [1,2,3,4,5], y-values: [10,20,15,35,30]
@@ -69,8 +68,6 @@
 
             var rr = Raphael(document.getElementById("bubble"), width, height);
             var space = width / (mentioned.length + 3);
-            console.log(space);
-            
             for (var i=0; i < mentioned.length; i++) {
               var m = mentioned[i]
               if (m[2]) {
@@ -79,11 +76,20 @@
                 var color = blue;
               };
               
-              
-              cc = rr.circle(50 + (i * space), Math.floor(Math.random()*height), processingMap(m[1], 25,111 , 5, 20)).attr({
+              var mark_size = processingMap(m[1], 25,111 , 5, 20)
+              var mark_x = 50 + (i * space);
+              var mark_y = Math.floor(Math.random()*height);
+              cc = rr.circle(mark_x, mark_y, mark_size).attr({
                   fill: color,
                   stroke: "hsb(0.5, 0.25, 1)"
               });
+              if (m[2]) {
+                var href = JSON.parse(m[2].schedule.content).href;
+                cc.attr({href:href})
+              };
+              if (mark_size > 3) {
+                tt = rr.text(mark_x,mark_y,  m[0]);
+              };
               
             };
             // cc = rr.circle(100, 100, 20).attr({

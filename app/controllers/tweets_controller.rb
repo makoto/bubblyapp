@@ -6,14 +6,17 @@ class TweetsController < ApplicationController
     @schedules = Schedule.where("start_at between ? and ? or finish_at between ? and ?", 
       first.to_s(:db), last.to_s(:db), first.to_s(:db), last.to_s(:db)
     )
-    @mentions = Mention.where("twitter not in  ('@sxsw', '@foursquare')").group(:twitter).order("count(*) desc").limit(10)
-    @sorted_mentions = @mentions.count.sort{|a, b| b[1] <=> a[1]}.map do |a| 
+    @mentions = Mention.where("twitter not in  ('@sxsw', '@foursquare')").group(:twitter).order("count(*) desc").limit(100)
+    @mentions_summary = @mentions.count.sort_by { rand }.map do |a| 
       if speaker = Speaker.find_by_twitter(a.first)
         # raise speaker.schedule.inspect
-       a << [speaker.schedule]
+       # a << [speaker.schedule]
+       a << speaker.schedule
+      else
+       a << false
       end
-      a
     end
+    # raise @mentions_summary.inspect
     # @mentions_tweets = Tweet.joins(:mentions).where("twitter in  (?)", @mentions.map{|m| m.twitter}).
     #   group('mentions.twitter', 'concat(YEAR(tweeted_at), "/",   MONTH(tweeted_at), "/", DAY(tweeted_at), " ", HOUR(tweeted_at) , ":", MINUTE(tweeted_at))').count
     # b = @mentions_tweets.reduce({}) do |a,b|
