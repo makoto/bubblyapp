@@ -1,2 +1,24 @@
-Use this README file to introduce your application and point to useful places in the API for learning more.
-Run "rake doc:app" to generate API documentation for your models, controllers, helpers, and libraries.
+
+
+
+## How to setup rails
+
+- Setup config/database.yml
+
+  # this will load up data at schedule/speaker
+  rake db:seed
+
+or import entire tables
+  
+  cd db 
+  gzip -d sample.sql.gz
+  mysql -u root < sample.sql 
+
+## How to setup streaming (will push to pusher, and save to database)
+
+- Get pusher account
+- Add the detail to config/config.yml
+
+    rails runner script/consumer.rb
+
+
