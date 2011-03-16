@@ -43,9 +43,9 @@ class JSONStream
         
         p t = Tweet.create!(:id_str => id_str, :tweeted_at => tweeted_at, :retweet_count => retweet_count, :content => line)
         user_mentions.each do |u|
-          p t.mentions.create!(:twitter => "@" + u, :user => User.find_or_create_by_twitter(u.twitter))
+          p t.mentions.create!(:twitter => "@" + u, :user => User.find_or_create_by_twitter("@" + u))
         end
-        # Pusher['twitter'].trigger!('created', event)
+        Pusher['twitter'].trigger!('created', event)
       rescue Exception => e
         p "ERROR"
         p e
