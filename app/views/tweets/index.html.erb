@@ -107,6 +107,15 @@
         $('#tweets ul').html(tweets.join(''));
         drawBubble();
       });
+      
+      channel.bind('updated', function(data) {
+        console.log("updated_summary")
+        console.log(data);
+        mentioned = data;
+        setupBubble();
+        drawBubble();
+      });
+      
       setInterval("updateTime()", 60000);
       setInterval("updateTPM()", 10000);
       setInterval("updateGraph()", 60000);
