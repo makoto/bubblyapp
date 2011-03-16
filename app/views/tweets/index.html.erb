@@ -196,15 +196,19 @@
           var m_counter = 0;
           for(i in mentioned){
             var m = mentioned[i]
-            cc = rr.circle(m.mark_x, m.mark_y, m.mark_size).attr({
-                fill: m.color,
-                stroke: "hsb(0.5, 0.25, 1)"
-            });
+            var bubble_options = {
+              fill: m.color,
+              stroke: "hsb(0.5, 0.25, 1)"
+            }
+            
             if (m.speaker) {
               var href = JSON.parse(m.speaker.schedule.content).href;
-              cc.attr({href:href})
-              rr.text(m.mark_x,m.mark_y,  i);
+              bubble_options.href = href;
             };
+            cc = rr.circle(m.mark_x, m.mark_y, m.mark_size).attr(bubble_options);
+            if(m.speaker){
+              rr.text(m.mark_x,m.mark_y,  i).attr({href:href});
+            }
           }
         }
         
