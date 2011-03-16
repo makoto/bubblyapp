@@ -209,6 +209,7 @@
         }
         
         window.onload = function() {
+          updateTime();
           drawGraph();
           setupBubble();
           drawBubble();
@@ -220,10 +221,9 @@
   <h2>
     <img src="images/sxswbubbly_logo.png" width="100" height="30" border="1">
     #SXSW Tweets
-    at <span id="localtime"><%= @tweets.last.tweeted_at.getlocal.strftime("%Y/%m/%d %H:%S") %></span>
+    at <span id="localtime"></span>
   (
-  <span id="austintime">
-    <%= @tweets.last.tweeted_at.in_time_zone("Central Time (US & Canada)").strftime("%Y/%m/%d %H:%S") %>
+  <span id="austintime">   
   </span>
     in Austin, TX
   )
