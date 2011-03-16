@@ -196,10 +196,19 @@
           }
         }
 
+        function clearPaper(paper){
+            var paperDom = paper.canvas;
+            paperDom.parentNode.removeChild(paperDom);
+        }
+
         var drawBubble = function(){
-          // This was causing massive memory leak.
-          // $("#bubble").empty();
+          // This was causing massive memory leak
+          var paper = Raphael(document.getElementById("bubble"), width, height);
+          // clearPaper(paper);
+          $("#bubble").empty();
+          
           var rr = Raphael(document.getElementById("bubble"), width, height);
+          
           var mentioned_length = 0;
           for (k in mentioned) if (mentioned.hasOwnProperty(k)) mentioned_length++;
           var space = width * 0.9 / mentioned_length;
