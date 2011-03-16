@@ -1,15 +1,24 @@
 class TweetsController < ApplicationController
   def index
-    @tweets = Tweet.all
+    time = 1.hour.ago.to_s(:db)
+    @tweets = Tweet.where("tweeted_at > ?", time)
+    if @tweets.empty?
+      # Set default
+      time = 10.days.ago.to_s(:db) 
+      @tweets = Tweet.where("tweeted_at > ?", time)
+    end
+    
+    summary = @tweets.group('concat(YEAR(tweeted_at), "/",   MONTH(tweeted_at), "/", DAY(tweeted_at), " ", HOUR(tweeted_at) , ":", MINUTE(tweeted_at))').
+    count.sort_by{|a, b| a[0] <=> b[1] }
+    
+    @summary_dates = summary.map{|s| s[0]}.to_json
+    @summary_numbers = summary.map{|s| s[1]}.to_json
+    # raise @summary_numbers.inspect
     first = @tweets.first.tweeted_at
     last = @tweets.last.tweeted_at
     @tpm =( @tweets.size / (last - first) * 60).to_i
     
-    @schedules = Schedule.where("start_at between ? and ? or finish_at between ? and ?", 
-      first.to_s(:db), last.to_s(:db), first.to_s(:db), last.to_s(:db)
-    )
-    @mentions = Mention.where("twitter not in  ('@sxsw', '@foursquare')").group(:twitter).order("count(*) desc").limit(100)
-    # @mentions_summary = @mentions.count.sort_by { rand }.map do |a| 
+    @mentions = Mention.joins(:tweet).where("tweets.tweeted_at > ? and twitter not in  ('@sxsw', '@foursquare')", time).group(:twitter).order("count(*) desc").limit(100)
     @mentions_summary = @mentions.count.reduce({}) do |a, b| 
       name = b[0] 
       schedule = if speaker = Speaker.find_by_twitter(name)
@@ -20,19 +29,5 @@ class TweetsController < ApplicationController
       a[name] = {:count => b[1], :speaker => schedule}
       a
     end
-    
-    # raise @mentions_summary.keys.size.to_s
-    # @mentions_tweets = Tweet.joins(:mentions).where("twitter in  (?)", @mentions.map{|m| m.twitter}).
-    #   group('mentions.twitter', 'concat(YEAR(tweeted_at), "/",   MONTH(tweeted_at), "/", DAY(tweeted_at), " ", HOUR(tweeted_at) , ":", MINUTE(tweeted_at))').count
-    # b = @mentions_tweets.reduce({}) do |a,b|
-    #   mention = b[0][0]
-    #   a[mention] = a[mention]
-    #   unless a[mention]
-    #     a[mention] = {}
-    #   else
-    #     a[mention] = a[mention] + 1
-    #   end
-    #   a
-    # end
   end
 end
