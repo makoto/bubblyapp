@@ -1,6 +1,7 @@
 class TweetsController < ApplicationController
   def index
-    time = 1.hour.ago.to_s(:db)
+    default_hour = params[:hour] ? params[:hour].to_i : 1
+    time = default_hour.hour.ago.to_s(:db)
     @tweets = Tweet.where("tweeted_at > ?", time)
     if @tweets.empty?
       # Set default
