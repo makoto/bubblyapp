@@ -55,12 +55,37 @@
         line_numbers.push(tpm);
         line_numbers.shift();
         var date = new Date;
-        var date_string = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes();
+        var date_string = formatTime(date);
         line_dates.push(date_string);        
         line_dates.shift();
         draw();
         summary = 0;
       }
+      
+      function updateTime () {
+        var d = new Date()
+        $("#localtime").text(formatTime(d))
+        $("#austintime").text(formatTime(calcTime(d, '-5')))
+      }
+      
+      function formatTime (date) {
+        return date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes();
+      }
+      // From http://tek.io/fvqWRw 
+      function calcTime(d, offset) {
+          // create Date object for current location
+          // convert to msec
+          // add local time zone offset 
+          // get UTC time in msec
+          utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+
+          // create new Date object for different city
+          // using supplied offset
+          nd = new Date(utc + (3600000*offset));
+          // return time as a string
+          return nd;
+      }
+      
       var pusher = new Pusher('1ae96b4c472db6c039f1');
       var channel = pusher.subscribe('twitter');
       var counter = 0;
@@ -76,6 +101,7 @@
         };
         $('#tweets ul').html(tweets.join());
       });
+      setInterval("updateTime()", 6000);
       setInterval("updateTPM()", 10000);
       setInterval("updateGraph()", 60000);
     </script>
@@ -174,10 +200,12 @@
 <body>
   <h2>#SXSW Tweets
     <!--img src="images/sxswbubbly_logo.png" width="100" height="30" -->
-    at <%= @tweets.last.tweeted_at.getlocal.to_s(:short) %>
+    at <span id="localtime"><%= @tweets.last.tweeted_at.getlocal.strftime("%Y/%m/%d %H:%S") %></span>
   (
-  <%= @tweets.last.tweeted_at.in_time_zone("Central Time (US & Canada)").to_s(:short) %>
-  in Austin, TX
+  <span id="austintime">
+    <%= @tweets.last.tweeted_at.in_time_zone("Central Time (US & Canada)").strftime("%Y/%m/%d %H:%S") %>
+  </span>
+    in Austin, TX
   )
   </h2>
   <div class="container">
