@@ -3,7 +3,7 @@ require File.expand_path('../../config/environment', __FILE__)
 require "rubygems"
 require 'yaml'
 require 'json'
-# require 'pusher'
+require 'pusher'
 require 'net/http'
 
 ROOT_DIR = RAILS_ROOT
@@ -19,9 +19,9 @@ p ROOT_DIR + '/config/config.yml'
 # @f = File.new(outfile, "a")
 url = "http://stream.twitter.com/1/statuses/filter.json?track=#{keyword}"
 
-# Pusher.app_id = config[:app_id]
-# Pusher.key = config[:key]
-# Pusher.secret = config[:secret]
+Pusher.app_id = config[:app_id]
+Pusher.key = config[:key]
+Pusher.secret = config[:secret]
 
 # from http://d.hatena.ne.jp/m_seki/?of=10
 class JSONStream
