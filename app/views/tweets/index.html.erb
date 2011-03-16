@@ -171,7 +171,7 @@
           }else{
             m.color = blue;
           };
-          m.mark_size = processingMap(m.count, 25,111 , 5, 20)
+          m.mark_size = processingMap(m.count, 25,111 , 7, 20)
           // var mark_x = 50 + (m_counter * space);
           m.mark_x = Math.floor(Math.random()*(width * 0.9));
           m.mark_y = Math.floor(Math.random()*(height * 0.9));
@@ -204,7 +204,7 @@
               var href = JSON.parse(m.speaker.schedule.content).href;
               cc.attr({href:href})
             };
-            if (m.mark_size > 3) {
+            if (m.mark_size > 7) {
               tt = rr.text(m.mark_x,m.mark_y,  i);
             };
           }
