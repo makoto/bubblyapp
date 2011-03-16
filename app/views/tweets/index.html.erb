@@ -74,8 +74,8 @@
       }
       // From http://tek.io/fvqWRw 
       function calcTime(d, offset) {
-          utc = d.getTime() + (d.getTimezoneOffset() * 60000);
-          nd = new Date(utc + (3600000*offset));
+          var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+          var nd = new Date(utc + (3600000*offset));
           return nd;
       }
 
@@ -122,7 +122,6 @@
         var blue = "hsb(0.6, 1, 0.75)";
         var green = "hsb(0.5, 0.25, 1)";
         
-        var x_values = [];
         var line_dates = <%= raw @summary_dates %>
         var date_axis = [] 
         
@@ -139,7 +138,7 @@
           $("#graph").empty();
           var r = Raphael(document.getElementById("graph"), width, height);
 
-
+          var x_values = [];
           for (var i=1; i < line_numbers.length + 1; i++) {
             date = new Date(line_dates[i]);
             if ((date.getMinutes() % 10) == 0) {
@@ -179,7 +178,6 @@
             m.color = blue;
           };
           m.mark_size = processingMap(m.count, 25,111 , 7, 20)
-          // var mark_x = 50 + (m_counter * space);
           m.mark_x = Math.floor(Math.random()*(width * 0.9));
           m.mark_y = Math.floor(Math.random()*(height * 0.9));
         }
