@@ -81,14 +81,24 @@
         counter++;
         summary++;
         tweets.push("<li>" + data.some.text +"</li>");
-        // data.some.entities.user_mentions.each(function(i){
-        //   console.log(i.screen_name);
-        // });
-        
+        data.some.entities.user_mentions.each(function(i){
+          if (mentioned["@" + i.screen_name]) {
+            mentioned["@" + i.screen_name].count ++;
+          }else{
+            var m = mentioned["@" + i.screen_name] = {
+              count:1,
+              speakers:null,
+            };
+            updateMentionProperties(m);
+          };
+          // console.log(mentioned["@" + i.screen_name]);
+          // console.log(i.screen_name);
+        });
         if (tweets.length > 7) {
           tweets.shift();
         };
         $('#tweets ul').html(tweets.join());
+        drawBubble();
       });
       setInterval("updateTime()", 60000);
       setInterval("updateTPM()", 10000);
@@ -154,22 +164,28 @@
           });
         }
 
+        var updateMentionProperties = function(m){
+          if (m.speaker) {
+            m.color = green;
+          }else{
+            m.color = blue;
+          };
+          m.mark_size = processingMap(m.count, 25,111 , 5, 20)
+          // var mark_x = 50 + (m_counter * space);
+          m.mark_x = Math.floor(Math.random()*(width * 0.9));
+          m.mark_y = Math.floor(Math.random()*(height * 0.9));
+        }
+
         var setupBubble = function(){
           for(i in mentioned){
             var m = mentioned[i];
-            if (m.speaker) {
-              m.color = green;
-            }else{
-              m.color = blue;
-            };
-            m.mark_size = processingMap(m.count, 25,111 , 5, 20)
-            // var mark_x = 50 + (m_counter * space);
-            m.mark_x = Math.floor(Math.random()*(width * 0.9));
-            m.mark_y = Math.floor(Math.random()*(height * 0.9));
+            updateMentionProperties(m);
           }
         }
 
         var drawBubble = function(){
+          console.log("DRAWING")
+          
           console.log(mentioned);
           $("#bubble").empty();
           var rr = Raphael(document.getElementById("bubble"), width, height);
