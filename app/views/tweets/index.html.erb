@@ -9,25 +9,32 @@
 	   *{
        font-family: "Eigerdals black","Arial Rounded MT Bold","Trebuchet MS",Trebuchet,sans-serif;
   	   background: #eee;
-  
 	   }
 	   .text{
        font-size: 10px;	     
 	   }
 	   .left{
+	     border:1px #CCC dotted;
 	     width:200px;
        float:left;
      }
+     .container{
+       width:1200px;
+     }
+     #bubble{
+       border-bottom: 1px #CCC dotted;
+     }
      .main{
-       float:right;
+       border: 1px #CCC dotted;
+       width:830px;
+       float:left;
      }
      ul{
        list-style-type: none;
        padding-left:0px;
      }
      li{
-       border-bottom:0.1px;
-       border-style:dotted;
+       border-bottom: 1px #CCC dotted;
        color: #CCC;
      }
 	   
@@ -98,7 +105,7 @@
         if (tweets.length > 7) {
           tweets.shift();
         };
-        $('#tweets ul').html(tweets.join());
+        $('#tweets ul').html(tweets.join(''));
         drawBubble();
       });
       setInterval("updateTime()", 60000);
@@ -235,21 +242,21 @@
   )
   </h2>
   <div class="container">
-    <div class="left" class="box column"  style="border:1px dashed #CCC;">
-      <div style="width:200px;height:25px">
+    <div class="left" class="box column">
+      <div>
         Tweets Per Minute:<span id="tpm"><%= @tpm %></span>
       </div>
-      <div id="tweets" class="text" style="border:1px dashed #CCC;">
+      <div id="tweets" class="text">
         <ul>
         </ul>
       </div>
     </div>
     <div class="main" class="box column">
-      <div id="bubble" style="border:1px dashed #CCC;"></div>
-      <div id="graph" style="width:800px;height:180px;border:1px dashed #CCC;"></div>
+      <div id="bubble"></div>
+      <div id="graph"></div>
       <div>
-        Made by <%= link_to("@makoto_inoue", "http://twitter.com/makoto_inoue")%> from <%= link_to("New Bamboo", "http://new-bamboo.co.uk")%>.
-        Powered by <%= link_to("lanyrd", "http://lanyrd.com")%> and <%= link_to("pusher", "http://pusherapp.com")%>.
+        Made by <%= link_to("@makoto_inoue", "http://twitter.com/makoto_inoue")%> from <%= link_to("@newbamboo", "http://new-bamboo.co.uk")%>.
+        Powered by <%= link_to("lanyrd", "http://lanyrd.com")%>, <%= link_to("pusher", "http://pusherapp.com")%> and <%= link_to("heroku", "http://heroku.com/")%>.
         Loves <%= link_to("SXSW", "http://sxsw.com/")%>
       </div>
     </div>
