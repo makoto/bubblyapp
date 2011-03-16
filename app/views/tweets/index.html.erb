@@ -197,9 +197,8 @@
         }
 
         var drawBubble = function(){
-          // console.log("DRAWING")
-          // console.log(mentioned);
-          $("#bubble").empty();
+          // This was causing massive memory leak.
+          // $("#bubble").empty();
           var rr = Raphael(document.getElementById("bubble"), width, height);
           var mentioned_length = 0;
           for (k in mentioned) if (mentioned.hasOwnProperty(k)) mentioned_length++;
@@ -217,7 +216,7 @@
               var href = JSON.parse(m.speaker.schedule.content).href;
               bubble_options.href = href;
             };
-            cc = rr.circle(m.mark_x, m.mark_y, m.mark_size).attr(bubble_options);
+            rr.circle(m.mark_x, m.mark_y, m.mark_size).attr(bubble_options);
             if(m.speaker){
               rr.text(m.mark_x,m.mark_y,  i).attr({href:href, fill:"#333366"});
             }else{
