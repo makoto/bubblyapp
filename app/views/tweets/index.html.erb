@@ -207,7 +207,9 @@
             };
             cc = rr.circle(m.mark_x, m.mark_y, m.mark_size).attr(bubble_options);
             if(m.speaker){
-              rr.text(m.mark_x,m.mark_y,  i).attr({href:href});
+              rr.text(m.mark_x,m.mark_y,  i).attr({href:href, fill:"#333366"});
+            }else{
+              if (m.mark_size > 7) {rr.text(m.mark_x,m.mark_y,  i).attr({fill:"grey", opacity: 0.5});};
             }
           }
         }
