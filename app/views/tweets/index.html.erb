@@ -78,11 +78,11 @@
       var summary = 0;
       var tweets = [];
       channel.bind('created', function(data) {
-        // data.some.user.profile_image_url;
+        // data.user.profile_image_url;
         counter++;
         summary++;
         tweets.push("<li>" + data.text +"</li>");
-        data.some.entities.user_mentions.each(function(i){
+        data.entities.user_mentions.each(function(i){
           if (mentioned["@" + i.screen_name]) {
             mentioned["@" + i.screen_name].count ++;
           }else{
