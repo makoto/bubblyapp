@@ -81,6 +81,10 @@
         counter++;
         summary++;
         tweets.push("<li>" + data.some.text +"</li>");
+        // data.some.entities.user_mentions.each(function(i){
+        //   console.log(i.screen_name);
+        // });
+        
         if (tweets.length > 7) {
           tweets.shift();
         };
@@ -150,36 +154,49 @@
           });
         }
 
+        var setupBubble = function(){
+          for(i in mentioned){
+            var m = mentioned[i];
+            if (m.speaker) {
+              m.color = green;
+            }else{
+              m.color = blue;
+            };
+            m.mark_size = processingMap(m.count, 25,111 , 5, 20)
+            // var mark_x = 50 + (m_counter * space);
+            m.mark_x = Math.floor(Math.random()*(width * 0.9));
+            m.mark_y = Math.floor(Math.random()*(height * 0.9));
+          }
+        }
+
         var drawBubble = function(){
+          console.log(mentioned);
           $("#bubble").empty();
           var rr = Raphael(document.getElementById("bubble"), width, height);
-          var space = width * 0.9 / mentioned.length;
-          for (var i=0; i < mentioned.length; i++) {
+          var mentioned_length = 0;
+          for (k in mentioned) if (mentioned.hasOwnProperty(k)) mentioned_length++;
+          var space = width * 0.9 / mentioned_length;
+          
+          var m_counter = 0;
+          for(i in mentioned){
             var m = mentioned[i]
-            if (m[2]) {
-              var color = green;
-            }else{
-              var color = blue;
-            };
-            var mark_size = processingMap(m[1], 25,111 , 5, 20)
-            var mark_x = 50 + (i * space);
-            var mark_y = Math.floor(Math.random()*(height * 0.9));
-            cc = rr.circle(mark_x, mark_y, mark_size).attr({
-                fill: color,
+            cc = rr.circle(m.mark_x, m.mark_y, m.mark_size).attr({
+                fill: m.color,
                 stroke: "hsb(0.5, 0.25, 1)"
             });
-            if (m[2]) {
-              var href = JSON.parse(m[2].schedule.content).href;
+            if (m.speaker) {
+              var href = JSON.parse(m.speaker.schedule.content).href;
               cc.attr({href:href})
             };
-            if (mark_size > 3) {
-              tt = rr.text(mark_x,mark_y,  m[0]);
+            if (m.mark_size > 3) {
+              tt = rr.text(m.mark_x,m.mark_y,  i);
             };
-          };
+          }
         }
         
         window.onload = function() {
           drawGraph();
+          setupBubble();
           drawBubble();
         }
     </script>
