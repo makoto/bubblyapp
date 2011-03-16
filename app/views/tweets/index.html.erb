@@ -203,9 +203,7 @@
             if (m.speaker) {
               var href = JSON.parse(m.speaker.schedule.content).href;
               cc.attr({href:href})
-            };
-            if (m.mark_size > 7) {
-              tt = rr.text(m.mark_x,m.mark_y,  i);
+              rr.text(m.mark_x,m.mark_y,  i);
             };
           }
         }
