@@ -19,13 +19,13 @@ class TweetsController < ApplicationController
     last = @tweets.last.tweeted_at
     @tpm =( @tweets.size / (last - first) * 60).to_i
     
-    @mentions = Mention.joins(:tweet).where("tweets.tweeted_at > ? and twitter not in  ('@sxsw', '@foursquare')", time).group(:twitter).order("count(*) desc").limit(100)
-    @speakers = Speaker.includes(:schedule).where("twitter in (?)", @mentions.map{|m| m.twitter})
+    mentions = Mention.joins(:tweet).where("tweets.tweeted_at > ? and twitter not in  ('@sxsw', '@foursquare')", time).group(:twitter).order("count(*) desc").limit(100)
+    speakers = Speaker.includes(:schedule).where("twitter in (?)", mentions.map{|m| m.twitter})
 
     #Need to massively refactor
-    @mentions_summary = @mentions.count.reduce({}) do |a, b| 
+    @mentions_summary = mentions.count.reduce({}) do |a, b| 
       name = b[0] 
-      schedule = if speaker = @speakers.select{|s| s.twitter == name}[0]
+      schedule = if speaker = speakers.select{|s| s.twitter == name}[0]
        speaker.schedule
       end
       a[name] = {:count => b[1], :speaker => schedule}
